@@ -1,0 +1,17 @@
+[package]
+name = "workspace"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+math_operations = { path = "./math_operations" }
+
+[workspace]
+members = [
+   "math_operations",
+   "app"
+]
+
+[[bin]]
+name = "app"
+path = "app/src/main.rs"
