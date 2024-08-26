@@ -1,62 +1,75 @@
 // Définition de la struct Car
 struct Car {
-    make: String,
+    brand: String,
     model: String,
     year: u32,
 }
 
 // Implémentation de méthodes pour Car
 impl Car {
+    // Constructeur [optionnel]
+    fn new(brand: String, model: String, year: u32) -> Self {
+        Car { brand, model, year }
+    }
+
+    // Méthode pour décrire l'instance [optionnel]
+    fn describe(&self) -> String {
+        format!("In {}, {} created the {}", self.year, self.brand, self.model)
+    }
+
+    /* DEPRECATED : ne gère pas quand current_year < self.year
     // Méthode pour calculer l'âge de la voiture
     fn car_age(&self, current_year: u32) -> u32 {
         current_year - self.year
     }
 
     // Fonction pour vérifier si la voiture est ancienne
-    fn is_classic(&self, current_year: u32) -> Option<&Car> {
+    fn is_classic(&self, current_year: u32) -> Option<&Self> {
         if self.car_age(current_year) > 10 {
             Some(self)
         } else {
             None
         }
     }
+    */
 
-    // Fonction pour démarrer la voiture
-    fn start_car(&self, battery_ok: bool) -> Result<&Car, String> {
-        if battery_ok {
-            Ok(self)
+    // Méthode pour calculer l'âge de la voiture
+    fn car_age(&self, current_year: u32) -> Result<u32, String> {
+        if current_year < self.year {
+            Err(String::from("Current year cannot be less than the car's year of manufacture."))
         } else {
-            Err(String::from("Cannot start the car: battery is dead"))
+            Ok(current_year - self.year)
         }
+    }
+
+    // Fonction pour vérifier si la voiture est ancienne
+    fn is_classic(&self, current_year: u32) -> Result<bool, String> {
+        let age = self.car_age(current_year)?;
+        Ok(age > 10)
     }
 }
 
 fn main() {
-    let my_car = Car {
-        make: String::from("Toyota"),
-        model: String::from("Corolla"),
-        year: 2010,
-    };
+    let my_car = Car::new(
+        String::from("Fiat"),
+        String::from("Multipla"),
+        1998
+    );
+    println!("{}", my_car.describe());
+    // println!("Age of my car: {}", my_car.car_age(2024));
 
-    // Calcul de l'âge de la voiture
-    let current_year = 2024;
-    println!("Car age: {} years", my_car.car_age(current_year));
+    /* DEPRECATED
+    // Vérifier si la voiture est ancienne
+    match my_car.is_classic(2024) {
+        Some(_car) => println!("This car is a classic!"),
+        None => println!("This car is not a classic.")
+    }
+    */
 
     // Vérifier si la voiture est ancienne
-    match my_car.is_classic(current_year) {
-        Some(car) => println!("The car is a classic: {}", car.model),
-        None => println!("The car is not a classic"),
-    }
-
-    // Démarrer la voiture avec batterie OK
-    match my_car.start_car(true) {
-        Ok(car) => println!("Car started successfully: {}", car.model),
-        Err(e) => println!("Error: {}", e),
-    }
-
-    // Démarrer la voiture avec batterie déchargée
-    match my_car.start_car(false) {
-        Ok(car) => println!("Car started successfully: {}", car.model),
-        Err(e) => println!("Error: {}", e),
+    match my_car.is_classic(2024) {
+        Ok(true) => println!("This car is a classic!"),
+        Ok(false) => println!("This car is not a classic."),
+        Err(e) => println!("Error: {}", e)
     }
 }
