@@ -1,30 +1,24 @@
-1. Définir un struct `Car` selon les instructions suivantes :
-        a. Champs : `brand`, `model` et `year`
-        b. Méthode : `car_age` permettant de calculer l’âge de la voiture (en lui donnant une année en argument)
-        c. [Optionnel] Créer le contructeur (Méthode associée `new`)
-        d. [Optionnel] Créer la méthode `describe` qui formate une chaîne de caractères pour décrire l'instance du struct (ex : « In 1998, Fiat created the Multipla »)
+1. Définir un struct `Book` selon les instructions suivantes :
+    - Champs : `title`, `author`, `year` et `is_borrowed`
+    - Méthode : `book_age` permettant de calculer l’âge du livre (en lui donnant une année en argument)
+    - Créer la méthode `describe` qui formate une chaîne de caractères
+    pour décrire l'instance du struct
+    (ex : « The book "The Hitchhiker's Guide to the Galaxy" by Douglas Adams
+    was published in 1979. »)
+    - [Optionnel] Créer le contructeur (Méthode associée `new`) ; `is_borrowed` est `false` par défaut
 
-2. Écrire un programme permettant de créer une instance du struct `Car` et affichant l’âge de la voiture dans la console
+2. Écrire un programme permettant de créer une instance du struct `Book`
+et affichant la description du livre dans la console
 
-3. Définir une fonction `is_classic` qui retourne une `Option` pour vérifier si la voiture est ancienne (+ de 10 ans)… peut-être utiliser `car_age` dans la fonction ;)
+3. Définir une fonction `is_classic` qui retourne une `Option`
+pour vérifier si le livre est ancien (+ de 50 ans)…
+peut-être utiliser `book_age` dans la fonction ;)
 
-4. Compléter le programme en incorporant un appel à la fonction `is_classic` (avec l'année actuelle comme argument)
+4. Définir une fonction `borrow` qui retourne un `Result`
+pour emprunter le livre, avec une erreur si le livre est déjà emprunté
 
-5. Modifier l'année actuelle (dans l'appel de `is_classic`) par `1900`… Que se passe-t-il ?
+    > pensez à modifier l'instance dans la méthode
+    > pour passer `self.is_borrowed` à `true`  
+    > (si le livre peut être emprunté)
 
-        → Le programme panique ! Rust rencontre une situation qu'il ne peut
-        pas gérer correctement : (ici) convertir un nombre négatif (`1900 - 1998`) en type `u32` (_unsigned_).  
-        En mode _Debug_, le programme se termine avec un message d'erreur.
-
-6. Corriger la méthode `car_age` : elle doit retourner un `Result` :
-        - l'âge de la voiture si celui-ci est positif
-        - une erreur ("Current year cannot be less than the car's year of manufacture.") sinon
-
-7. Transformer la méthode `is_classic` pour utiliser directement ce Résult et renvoyer un `Result<bool, String>` grâce à l'opérateur `?`
-
-        > **ASTUCE** dans le `Ok` retourné par `is_classic`,
-        > vous pouvez transmettre une condition…  
-        > Celle-ci sera gérée dans le `match` grâce à :
-        >   - `Ok(true)`
-        >   - `Ok(false)`
-        >   - `Err(e)`
+5. Compléter le programme en incorporant des appels aux fonctions `is_classic` et `borrow`
