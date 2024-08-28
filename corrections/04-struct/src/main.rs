@@ -1,75 +1,85 @@
-// Définition de la struct Car
-struct Car {
-    brand: String,
-    model: String,
+// Struct Book
+struct Book {
+    title: String,
+    author: String,
     year: u32,
+    is_borrowed: bool,
 }
 
-// Implémentation de méthodes pour Car
-impl Car {
-    // Constructeur [optionnel]
-    fn new(brand: String, model: String, year: u32) -> Self {
-        Car { brand, model, year }
+impl Book {
+    // Constructeur pour Book
+    fn new(title: String, author: String, year: u32) -> Self {
+        Book { 
+            title, 
+            author, 
+            year, 
+            is_borrowed: false 
+        }
     }
-
-    // Méthode pour décrire l'instance [optionnel]
+    
+    // Méthode pour décrire l'instance
     fn describe(&self) -> String {
-        format!("In {}, {} created the {}", self.year, self.brand, self.model)
+        format!("The book `{}` by {} was published in {}.",
+            self.title,
+            self.author,
+            self.year
+        )
     }
 
-    /* DEPRECATED : ne gère pas quand current_year < self.year
-    // Méthode pour calculer l'âge de la voiture
-    fn car_age(&self, current_year: u32) -> u32 {
+    // Méthode pour calculer l'âge du livre
+    fn book_age(&self, current_year: u32) -> u32 {
         current_year - self.year
     }
 
-    // Fonction pour vérifier si la voiture est ancienne
+    // Méthode pour vérifier si le livre est un classique
     fn is_classic(&self, current_year: u32) -> Option<&Self> {
-        if self.car_age(current_year) > 10 {
+        if self.book_age(current_year) > 50 {
             Some(self)
         } else {
             None
         }
     }
-    */
 
-    // Méthode pour calculer l'âge de la voiture
-    fn car_age(&self, current_year: u32) -> Result<u32, String> {
-        if current_year < self.year {
-            Err(String::from("Current year cannot be less than the car's year of manufacture."))
+    // Méthode pour emprunter le livre
+    fn borrow(&mut self) -> Result<&Self, String> {
+        if self.is_borrowed {
+            Err(String::from("The book is already borrowed."))
         } else {
-            Ok(current_year - self.year)
+            // le livre est en train d'être emprunté, je modifie son statut
+            self.is_borrowed = true;
+            Ok(self)
         }
-    }
-
-    // Fonction pour vérifier si la voiture est ancienne
-    fn is_classic(&self, current_year: u32) -> Result<bool, String> {
-        let age = self.car_age(current_year)?;
-        Ok(age > 10)
     }
 }
 
 fn main() {
-    let my_car = Car::new(
-        String::from("Fiat"),
-        String::from("Multipla"),
-        1998
+    let current_year = 2024;
+
+    // Créer une instance de Book
+    let mut my_book = Book::new(
+        String::from("The Hitchhiker's Guide to the Galaxy"),
+        String::from("Douglas Adams"),
+        1979
     );
-    println!("{}", my_car.describe());
-    // println!("Age of my car: {}", my_car.car_age(2024));
 
-    /* DEPRECATED
-    // Vérifier si la voiture est ancienne
-    match my_car.is_classic(2024) {
-        Some(_car) => println!("This car is a classic!"),
-        None => println!("This car is not a classic.")
+    // Afficher l'âge du livre
+    println!("{}", my_book.describe());
+
+    // Vérifier si le livre est un classique
+    match my_book.is_classic(current_year) {
+        Some(_book) => println!("This book is a classic!"),
+        None => println!("This book is not a classic."),
     }
-    */
 
-    // Vérifier si la voiture est ancienne
-    match my_car.is_classic(2024) {
-        Ok(true) => println!("This car is a classic!"),
-        Ok(false) => println!("This car is not a classic."),
-        Err(e) => println!("Error: {}", e)
+    // Essayer d'emprunter le livre
+    match my_book.borrow() {
+        Ok(book) => println!("You have borrowed `{}`.", book.title),
+        Err(e) => println!("Error: {}", e),
+    }
+
+    // Essayer de réemprunter le livre
+    match my_book.borrow() {
+        Ok(book) => println!("You have borrowed `{}`.", book.title),
+        Err(e) => println!("Error: {}", e),
     }
 }
